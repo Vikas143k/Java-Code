@@ -1,0 +1,48 @@
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import java.sql.*;
+
+public class MyController {
+    
+    @FXML
+    private TextField firstNameTextField;
+    
+    @FXML
+    private TextField lastNameTextField;
+    
+    @FXML
+    private Button submitButton;
+    
+    private Connection connection;
+    
+    @FXML
+    public void initialize() {
+        // Create a database connection
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydatabase", "root", "oracle");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    public void handleSubmitButton() {
+        String firstName = firstNameTextField.getText();
+        String lastName = lastNameTextField.getText();
+        
+        // Retrieve data from database table
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE firstName = '" + firstName + "' AND lastName = '" + lastName + "'");
+            
+            if (resultSet.next()) {
+                System.out.println("Data verified");
+            } else {
+                System.out.println("Invalid data");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
